@@ -19,6 +19,13 @@ jobs:
       with:
         distribution: 'temurin'
         java-version: '21'
+        check-latest: true
+
+    - name: Set JAVA_HOME
+      run: echo "JAVA_HOME=${{ env.JAVA_HOME }}" >> $GITHUB_ENV
+
+    - name: Verify Java Installation
+      run: java -version
 
     - name: Cache Maven packages
       uses: actions/cache@v3
