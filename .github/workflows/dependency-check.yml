@@ -2,53 +2,6 @@ name: Dependency Check
 
 on:
   push:
-    branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
-
-jobs:
-  security-scan:
-    runs-on: ubuntu-latest
-
-    steps:
-    - name: Checkout code
-      uses: actions/checkout@v3
-
-    - name: Set up Java
-      uses: actions/setup-java@v3
-      with:
-        distribution: 'temurin'
-        java-version: '22'
-        check-latest: true
-
-    - name: Set JAVA_HOME
-      run: echo "JAVA_HOME=${{ env.JAVA_HOME }}" >> $GITHUB_ENV
-
-    - name: Verify Java Installation
-      run: java -version
-
-    - name: Cache Maven packages
-      uses: actions/cache@v3
-      with:
-        path: ~/.m2
-        key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
-        restore-keys: |
-          ${{ runner.os }}-maven-
-
-    - name: Install dependencies
-      run: mvn install -DskipTests
-
-    - name: Run OWASP Dependency-Check
-      uses: dependency-check/Dependency-Check_Action@main
-      with:
-        project: "DevOpsTraining"
-        path: "."
-        format: "HTML"
-        out: "dependency-check-report"
-name: Dependency Check
-
-on:
-  push:
     branches:
       - main
   pull_request:
@@ -67,14 +20,14 @@ jobs:
         uses: actions/setup-java@v3
         with:
           distribution: 'temurin'
-          java-version: '21' # Adjust if needed
+          java-version: '21'  # Change to '22' if needed
 
       - name: Run Dependency Check
         run: |
-          export JAVA_HOME=$(which java)
+          export JAVA_HOME=$(dirname $(dirname $(readlink -f $(which java))))
           echo "JAVA_HOME is set to $JAVA_HOME"
           docker run --rm \
-            -v $(pwd):/workspace \
+            -v ${{ github.workspace }}:/workspace \
             owasp/dependency-check \
             --project "DevOpsTraining" \
             --scan "/workspace" \
