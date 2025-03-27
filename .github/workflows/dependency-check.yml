@@ -32,5 +32,4 @@ jobs:
             --project "DevOpsTraining" \
             --scan "/workspace" \
             --format "HTML" \
-            --out "/workspace/dependency-check-report" \
-            --noupdate
+            --out "/workspace/dependency-check-report"
