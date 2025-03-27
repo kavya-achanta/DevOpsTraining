@@ -45,3 +45,39 @@ jobs:
         path: "."
         format: "HTML"
         out: "dependency-check-report"
+name: Dependency Check
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  dependency-check:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up JDK
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: '21' # Adjust if needed
+
+      - name: Run Dependency Check
+        run: |
+          export JAVA_HOME=$(which java)
+          echo "JAVA_HOME is set to $JAVA_HOME"
+          docker run --rm \
+            -v $(pwd):/workspace \
+            owasp/dependency-check \
+            --project "DevOpsTraining" \
+            --scan "/workspace" \
+            --format "HTML" \
+            --out "/workspace/dependency-check-report" \
+            --noupdate
